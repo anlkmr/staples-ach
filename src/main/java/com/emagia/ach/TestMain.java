@@ -13,6 +13,8 @@ import com.emagia.ach.achmaker.CTXEntryDetail;
 import com.emagia.ach.achmaker.CTXEntryDetailUpdated;
 
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
@@ -29,7 +31,18 @@ public class TestMain {
         achDocument.setBatches(getBatchRecordList());
         achDocument.setFileControl(createFileControl());
         achDocument.setNumberOfLines(6);
-        System.out.println(ach.write(achDocument));//, Charset.forName("UTF-8")
+        String result = ach.write(achDocument);
+
+        try {
+            FileWriter myWriter = new FileWriter("achtest1.ach");
+            myWriter.write(result);
+            myWriter.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        System.out.println(result);//, Charset.forName("UTF-8")
+        //ACHDocument achDocument1 = ach.read(result);
     }
 
     private static List<ACHBatch> getBatchRecordList() {

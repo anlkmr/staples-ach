@@ -32,6 +32,7 @@ import com.afrunt.jach.logic.ACHMetadataCollector;
 import com.afrunt.jach.logic.ACHReader;
 import com.afrunt.jach.logic.ACHWriter;
 import com.afrunt.jach.metadata.ACHMetadata;
+import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -46,6 +47,7 @@ import java.util.Set;
 /**
  * @author Anil Kadiga
  */
+@Service
 public class ACH implements ACHErrorMixIn {
     public static final String LINE_SEPARATOR = Optional.ofNullable(System.getProperty("line.separator")).orElse("\n");
     public static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
@@ -67,7 +69,7 @@ public class ACH implements ACHErrorMixIn {
             ReturnAddendaRecord.class,
             SecondIATAddendaRecord.class,
             SeventhIATAddendaRecord.class,
-            CTXEntryDetail.class,
+            //CTXEntryDetail.class,
             CTXEntryDetailUpdated.class,
             GeneralAddendaRecord.class,
             POPEntryDetail.class,
