@@ -5,21 +5,16 @@ import com.afrunt.jach.document.ACHBatchDetail;
 import com.afrunt.jach.document.ACHDocument;
 import com.afrunt.jach.domain.*;
 import com.afrunt.jach.domain.addenda.GeneralAddendaRecord;
-import com.afrunt.jach.logic.ACHWriter;
-import com.afrunt.jach.metadata.ACHBeanMetadata;
 import com.emagia.ach.achmaker.ACH;
-import com.emagia.ach.achmaker.ACHRecordEmagiaFileHeader;
-import com.emagia.ach.achmaker.CTXEntryDetail;
 import com.emagia.ach.achmaker.CTXEntryDetailUpdated;
-
 
 import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.nio.charset.Charset;
-import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 public class TestMain {
     public static void main(String args[]){

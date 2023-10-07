@@ -3,6 +3,7 @@ package com.emagia.ach.dto;
 import io.swagger.annotations.ApiModel;
 
 import javax.validation.constraints.Size;
+import java.text.ParseException;
 
 @ApiModel()
 public class BatchHeaderDto extends AbstractDto<Long> {
@@ -38,11 +39,11 @@ public class BatchHeaderDto extends AbstractDto<Long> {
     }
 
     public void setBatchHeaderId(Long batchHeaderId) {
-        this.batchHeaderId = batchHeaderId;
+        batchHeaderId = batchHeaderId;
     }
 
     public Long getBatchHeaderId() {
-        return this.batchHeaderId;
+        return batchHeaderId;
     }
 
     public void setRecordtype(String recordtype) {
@@ -109,8 +110,9 @@ public class BatchHeaderDto extends AbstractDto<Long> {
         return this.companyDescDate;
     }
 
-    public void setEffectiveEntryDate(String effectiveEntryDate) {
+    public void setEffectiveEntryDate(String effectiveEntryDate) throws ParseException {
         this.effectiveEntryDate = effectiveEntryDate;
+
     }
 
     public String getEffectiveEntryDate() {

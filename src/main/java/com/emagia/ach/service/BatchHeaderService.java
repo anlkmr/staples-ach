@@ -12,8 +12,9 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -30,6 +31,40 @@ public class BatchHeaderService {
     public BatchHeaderDto save(BatchHeaderDto batchHeaderDto) {
         BatchHeaderEntity entity = batchHeaderMapper.toEntity(batchHeaderDto);
         return batchHeaderMapper.toDto(repository.save(entity));
+    }
+
+    public BatchHeaderEntity toEntity(BatchHeaderDto dto) {
+        if ( dto == null ) {
+            return null;
+        }
+
+        BatchHeaderEntity batchHeaderEntity = new BatchHeaderEntity();
+
+        batchHeaderEntity.setRecordtype( dto.getRecordtype() );
+        batchHeaderEntity.setServiceclasscode( dto.getServiceclasscode() );
+        batchHeaderEntity.setCompanyNamePayeePayor( dto.getCompanyNamePayeePayor() );
+        batchHeaderEntity.setCompanyDiscretionaryData( dto.getCompanyDiscretionaryData() );
+        batchHeaderEntity.setCompanyid( dto.getCompanyid() );
+        batchHeaderEntity.setSeccode( dto.getSeccode() );
+        batchHeaderEntity.setCompanyEntryDesc( dto.getCompanyEntryDesc() );
+        batchHeaderEntity.setCompanyDescDate( dto.getCompanyDescDate() );
+        try {
+            if ( dto.getEffectiveEntryDate() != null ) {
+                batchHeaderEntity.setEffectiveEntryDate( new SimpleDateFormat("yyMMdd").parse( dto.getEffectiveEntryDate() ) );
+            }
+        }
+        catch ( ParseException e ) {
+            throw new RuntimeException( e );
+        }
+        batchHeaderEntity.setSettlementDate( dto.getSettlementDate() );
+        batchHeaderEntity.setOriginatorStatusCode( dto.getOriginatorStatusCode() );
+        batchHeaderEntity.setRtNumberOdfiId( dto.getRtNumberOdfiId() );
+        batchHeaderEntity.setBatchnumber( dto.getBatchnumber() );
+        if ( dto.getBatchHeaderId() != null ) {
+            batchHeaderEntity.setBatchHeaderId( dto.getBatchHeaderId() );
+        }
+
+        return batchHeaderEntity;
     }
 
     public void deleteById(Long id) {

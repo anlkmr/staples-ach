@@ -2,6 +2,7 @@ package com.emagia.ach.service;
 
 import com.emagia.ach.dto.AddendaDto;
 import com.emagia.ach.entity.AddendaEntity;
+import com.emagia.ach.exception.ResourceNotFoundException;
 import com.emagia.ach.mapper.AddendaMapper;
 import com.emagia.ach.repository.AddendaRepository;
 import jakarta.transaction.Transactional;
@@ -11,7 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import com.emagia.ach.exception.ResourceNotFoundException;
+
 import java.util.List;
 
 @Slf4j

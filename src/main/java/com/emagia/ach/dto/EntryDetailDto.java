@@ -3,6 +3,7 @@ package com.emagia.ach.dto;
 import io.swagger.annotations.ApiModel;
 
 import javax.validation.constraints.Size;
+import java.math.BigDecimal;
 
 @ApiModel()
 public class EntryDetailDto extends AbstractDto<Long> {
@@ -18,13 +19,13 @@ public class EntryDetailDto extends AbstractDto<Long> {
     @Size(max = 255)
     private String receivingDfiAccountNumber;
     @Size(max = 255)
-    private String amount;
+    private BigDecimal amount;
     @Size(max = 255)
     private String individualid;
     @Size(max = 255)
     private String individualname;
     @Size(max = 255)
-    private String discretionaryDate;
+    private String discretionaryData;
     @Size(max = 255)
     private String addendaRecordIndicator;
     @Size(max = 255)
@@ -81,11 +82,11 @@ public class EntryDetailDto extends AbstractDto<Long> {
         return this.receivingDfiAccountNumber;
     }
 
-    public void setAmount(String amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 
-    public String getAmount() {
+    public BigDecimal getAmount() {
         return this.amount;
     }
 
@@ -105,12 +106,12 @@ public class EntryDetailDto extends AbstractDto<Long> {
         return this.individualname;
     }
 
-    public void setDiscretionaryDate(String discretionaryDate) {
-        this.discretionaryDate = discretionaryDate;
+    public void setDiscretionaryData(String discretionaryData) {
+        this.discretionaryData = discretionaryData;
     }
 
-    public String getDiscretionaryDate() {
-        return this.discretionaryDate;
+    public String getDiscretionaryData() {
+        return this.discretionaryData;
     }
 
     public void setAddendaRecordIndicator(String addendaRecordIndicator) {

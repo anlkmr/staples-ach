@@ -22,7 +22,7 @@ import com.afrunt.jach.annotation.ACHField;
 import com.afrunt.jach.annotation.ACHRecordType;
 import com.afrunt.jach.domain.NonIATEntryDetail;
 
-import static com.afrunt.jach.annotation.InclusionRequirement.*;
+import static com.afrunt.jach.annotation.InclusionRequirement.REQUIRED;
 
 /**
  * @author Anil Kadiga

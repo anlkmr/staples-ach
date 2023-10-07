@@ -2,15 +2,15 @@ package com.emagia.ach.entity;
 
 import jakarta.persistence.*;
 
-import java.util.Objects;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "ENTRY_DETAIL", schema = "HR")
 public class EntryDetailEntity {
     @Basic
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "ID", nullable = true)
+    @SequenceGenerator(schema = "hr", name = "ENTRY_DETAIL_ID_SEQ", sequenceName  = "ENTRY_DETAIL_ID_SEQ", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ENTRY_DETAIL_ID_SEQ")
     private Long id;
     @Basic
     @Column(name = "RECORDTYPE", nullable = true)
@@ -29,7 +29,7 @@ public class EntryDetailEntity {
     private String receivingDfiAccountNumber;
     @Basic
     @Column(name = "AMOUNT", nullable = true)
-    private String amount;
+    private BigDecimal amount;
     @Basic
     @Column(name = "INDIVIDUALID", nullable = true)
     private String individualid;
@@ -37,8 +37,8 @@ public class EntryDetailEntity {
     @Column(name = "INDIVIDUALNAME", nullable = true)
     private String individualname;
     @Basic
-    @Column(name = "DISCRETIONARY_DATE", nullable = true)
-    private String discretionaryDate;
+    @Column(name = "DISCRETIONARY_DATA", nullable = true)
+    private String discretionaryData;
     @Basic
     @Column(name = "ADDENDA_RECORD_INDICATOR", nullable = true)
     private String addendaRecordIndicator;
@@ -94,11 +94,11 @@ public class EntryDetailEntity {
         this.receivingDfiAccountNumber = receivingDfiAccountNumber;
     }
 
-    public String getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(String amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 
@@ -118,12 +118,12 @@ public class EntryDetailEntity {
         this.individualname = individualname;
     }
 
-    public String getDiscretionaryDate() {
-        return discretionaryDate;
+    public String getDiscretionaryData() {
+        return discretionaryData;
     }
 
-    public void setDiscretionaryDate(String discretionaryDate) {
-        this.discretionaryDate = discretionaryDate;
+    public void setDiscretionaryData(String discretionaryData) {
+        this.discretionaryData = discretionaryData;
     }
 
     public String getAddendaRecordIndicator() {

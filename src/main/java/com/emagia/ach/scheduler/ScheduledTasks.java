@@ -1,18 +1,14 @@
 package com.emagia.ach.scheduler;
 
-import com.emagia.ach.entity.Employee;
 import com.emagia.ach.repo.EmployeeRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.Date;
-import java.util.Optional;
 
 @Component
 public class ScheduledTasks {
@@ -31,6 +27,8 @@ public class ScheduledTasks {
     }
 
     //@Scheduled(cron = "0 */1 * ? * *")
+// file format: ach_test_YYYYMMDDHHMMsss.ach
+    // next iteration: from DB configuration.
 
 
     @Bean

@@ -2,7 +2,6 @@ package com.emagia.ach.annotation;
 
 import org.apache.commons.validator.routines.DateValidator;
 
-
 import javax.validation.Constraint;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

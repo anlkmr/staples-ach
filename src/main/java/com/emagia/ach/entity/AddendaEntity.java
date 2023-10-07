@@ -2,16 +2,14 @@ package com.emagia.ach.entity;
 
 import jakarta.persistence.*;
 
-import java.util.Objects;
-
 @Entity
 @Table(name = "ADDENDA", schema = "HR")
 public class AddendaEntity {
 
     @Basic
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "ID", nullable = true)
+    @SequenceGenerator(schema = "hr", name = "ADDENDA_ID_SEQ", sequenceName  = "ADDENDA_ID_SEQ", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ADDENDA_ID_SEQ")
     private long id;
     @Basic
     @Column(name = "RECORDTYPE", nullable = true)

@@ -23,11 +23,11 @@ public class FileHeaderDto extends AbstractDto<Long> {
     }
 
     public void setFileHeaderId(Long fileHeaderId) {
-        this.fileHeaderId = fileHeaderId;
+        fileHeaderId = fileHeaderId;
     }
 
     public Long getFileHeaderId() {
-        return this.fileHeaderId;
+        return fileHeaderId;
     }
 
     public void setRecordtype(String recordtype) {

@@ -2,7 +2,7 @@ package com.emagia.ach.entity;
 
 import jakarta.persistence.*;
 
-import java.util.Objects;
+import java.util.Date;
 
 @Entity
 @Table(name = "BATCH_HEADER", schema = "HR")
@@ -10,8 +10,8 @@ public class BatchHeaderEntity {
 
     @Basic
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "BATCH_HEADER_ID", nullable = true)
+    @SequenceGenerator(schema = "hr", name = "BATCH_HEADER_ID_SEQ", sequenceName  = "BATCH_HEADER_ID_SEQ", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "BATCH_HEADER_ID_SEQ")
     private Long batchHeaderId;
     @Basic
     @Column(name = "RECORDTYPE", nullable = true)
@@ -38,8 +38,9 @@ public class BatchHeaderEntity {
     @Column(name = "COMPANY_DESC_DATE", nullable = true)
     private String companyDescDate;
     @Basic
+    @Temporal(TemporalType.DATE)
     @Column(name = "EFFECTIVE_ENTRY_DATE", nullable = true)
-    private String effectiveEntryDate;
+    private Date effectiveEntryDate;
     @Basic
     @Column(name = "SETTLEMENT_DATE", nullable = true)
     private String settlementDate;
@@ -120,11 +121,11 @@ public class BatchHeaderEntity {
         this.companyDescDate = companyDescDate;
     }
 
-    public String getEffectiveEntryDate() {
+    public Date getEffectiveEntryDate() {
         return effectiveEntryDate;
     }
 
-    public void setEffectiveEntryDate(String effectiveEntryDate) {
+    public void setEffectiveEntryDate(Date effectiveEntryDate) {
         this.effectiveEntryDate = effectiveEntryDate;
     }
 

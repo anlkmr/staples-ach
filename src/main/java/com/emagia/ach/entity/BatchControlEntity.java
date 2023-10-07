@@ -2,15 +2,13 @@ package com.emagia.ach.entity;
 
 import jakarta.persistence.*;
 
-import java.util.Objects;
-
 @Entity
 @Table(name = "BATCH_CONTROL", schema = "HR")
 public class BatchControlEntity {
     @Basic
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "ID", nullable = true)
+    @SequenceGenerator(schema = "hr", name = "BATCH_CONTROL_ID_SEQ", sequenceName  = "BATCH_CONTROL_ID_SEQ", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "BATCH_CONTROL_ID_SEQ")
     private Long id;
     @Basic
     @Column(name = "RECORDTYPE", nullable = true)

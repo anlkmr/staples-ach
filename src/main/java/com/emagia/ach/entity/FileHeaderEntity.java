@@ -2,7 +2,7 @@ package com.emagia.ach.entity;
 
 import jakarta.persistence.*;
 
-import java.util.Objects;
+import java.util.Date;
 
 @Entity
 @Table(name = "FILE_HEADER", schema = "HR")
@@ -10,7 +10,9 @@ public class FileHeaderEntity {
 
     @Basic
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(schema = "hr", name = "FILE_HEADER_ID_SEQ", sequenceName  = "FILE_HEADER_ID_SEQ", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "FILE_HEADER_ID_SEQ")
+
     @Column(name = "FILE_HEADER_ID", nullable = true)
     private Long fileHeaderId;
 
@@ -28,7 +30,7 @@ public class FileHeaderEntity {
     private String fileidImo;
     @Basic
     @Column(name = "CREATION_DATE", nullable = true)
-    private String creationDate;
+    private Date creationDate;
     @Basic
     @Column(name = "CREATION_TIME", nullable = true)
     private String creationTime;
@@ -87,11 +89,11 @@ public class FileHeaderEntity {
         this.fileidImo = fileidImo;
     }
 
-    public String getCreationDate() {
+    public Date getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(String creationDate) {
+    public void setCreationDate(Date creationDate) {
         this.creationDate = creationDate;
     }
 

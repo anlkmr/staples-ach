@@ -25,7 +25,6 @@ import com.afrunt.jach.domain.addenda.GeneralAddendaRecord;
 import com.afrunt.jach.domain.addenda.POSAddendaRecord;
 import com.afrunt.jach.domain.addenda.ReturnAddendaRecord;
 import com.afrunt.jach.domain.addenda.iat.*;
-import com.afrunt.jach.domain.detail.CTXEntryDetail;
 import com.afrunt.jach.domain.detail.*;
 import com.afrunt.jach.logic.ACHErrorMixIn;
 import com.afrunt.jach.logic.ACHMetadataCollector;

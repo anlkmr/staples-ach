@@ -1,15 +1,19 @@
-package com.emagia.ach.service;import com.emagia.ach.dto.BatchControlDto;import com.emagia.ach.entity.BatchControlEntity;
-import com.emagia.ach.mapper.BatchControlMapper;import com.emagia.ach.repository.BatchControlRepository;import jakarta.transaction.Transactional;
+package com.emagia.ach.service;
+
+import com.emagia.ach.dto.BatchControlDto;
+import com.emagia.ach.entity.BatchControlEntity;
+import com.emagia.ach.exception.ResourceNotFoundException;
+import com.emagia.ach.mapper.BatchControlMapper;
+import com.emagia.ach.repository.BatchControlRepository;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import com.emagia.ach.exception.ResourceNotFoundException;
 
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
