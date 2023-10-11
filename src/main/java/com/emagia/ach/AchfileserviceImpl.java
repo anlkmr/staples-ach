@@ -17,6 +17,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -228,11 +229,8 @@ public class AchfileserviceImpl implements Achfileservice {
             fileHeader.setImmediateOrigin(fileHeaderEntity.getFileidImo());
             //fileHeader.setImmediateOrigin("2042896127");
             Calendar cal = Calendar.getInstance();
-
-            fileHeader.setFileCreationDate(fileHeaderEntity.getCreationDate());//"230828"
-            //fileHeader.setFileCreationDate(cal.getTime());//"230828"
-            fileHeader.setFileCreationTime(fileHeaderEntity.getCreationTime());
-            //fileHeader.setFileCreationTime(String.valueOf(cal.get(Calendar.HOUR_OF_DAY)) + String.valueOf(cal.get(Calendar.MINUTE)));
+            fileHeader.setFileCreationDate(cal.getTime());//"230828"
+            fileHeader.setFileCreationTime(String.valueOf(cal.get(Calendar.HOUR_OF_DAY)) + String.valueOf(cal.get(Calendar.MINUTE)));
             fileHeader.setFileIdModifier(fileHeaderEntity.getFileidModifier());
             //fileHeader.setFileIdModifier("A");
             fileHeader.getRecordSize();
