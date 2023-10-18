@@ -6,6 +6,7 @@ import com.afrunt.jach.document.ACHDocument;
 import com.afrunt.jach.domain.*;
 import com.afrunt.jach.domain.addenda.GeneralAddendaRecord;
 import com.emagia.ach.achmaker.ACH;
+import com.emagia.ach.achmaker.ACHDocumentUpdated;
 import com.emagia.ach.achmaker.CTXEntryDetailUpdated;
 
 import java.io.FileWriter;
@@ -21,7 +22,7 @@ public class TestMain {
         System.out.println("test *****--********");
         //UTF-8
         ACH ach = new ACH();
-        ACHDocument achDocument = new ACHDocument();
+        ACHDocumentUpdated achDocument = new ACHDocumentUpdated();
         achDocument.setFileHeader(CreateFileHeaderRecord());
         achDocument.setBatches(getBatchRecordList());
         achDocument.setFileControl(createFileControl());

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PersistenceUnitSettings">
+    <persistence-units>
+      <persistence-unit name="Exchange">
+        <packages>
+          <package value="com.emagia.ach" />
+        </packages>
+      </persistence-unit>
+      <persistence-unit name="StaplesEmagia">
+        <packages>
+          <package value="com.emagia.ach.entity.staples_emagia" />
+        </packages>
+      </persistence-unit>
+    </persistence-units>
+  </component>
+</project>

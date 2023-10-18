@@ -18,7 +18,6 @@
  */
 package com.emagia.ach.achmaker;
 
-import com.afrunt.jach.document.ACHDocument;
 import com.afrunt.jach.domain.*;
 import com.afrunt.jach.domain.addenda.CORAddendaRecord;
 import com.afrunt.jach.domain.addenda.GeneralAddendaRecord;
@@ -28,8 +27,6 @@ import com.afrunt.jach.domain.addenda.iat.*;
 import com.afrunt.jach.domain.detail.*;
 import com.afrunt.jach.logic.ACHErrorMixIn;
 import com.afrunt.jach.logic.ACHMetadataCollector;
-import com.afrunt.jach.logic.ACHReader;
-import com.afrunt.jach.logic.ACHWriter;
 import com.afrunt.jach.metadata.ACHMetadata;
 import org.springframework.stereotype.Service;
 
@@ -85,41 +82,42 @@ public class ACH implements ACHErrorMixIn {
             CORAddendaRecord.class,
             ARCEntryDetail.class,
             DNEEntryDetail.class,
-            XCKEntryDetail.class
+            XCKEntryDetail.class,
+            BlockingFileControlRecord.class
     )
     );
     private final ACHMetadataCollector metadataCollector;
-    private final ACHReader reader;
-    private ACHWriter writer;
+    private final ACHReaderUpdated reader;
+    private ACHWriterUpdated writer;
     private ACHMetadata metadata;
     private boolean blockAligning;
 
     public ACH() {
         metadataCollector = new ACHMetadataCollector();
         metadata = metadataCollector.collectMetadata(ACH_CLASSES);
-        reader = new ACHReader(metadata);
-        writer = new ACHWriter(metadata);
+        reader = new ACHReaderUpdated(metadata);
+        writer = new ACHWriterUpdated(metadata);
     }
 
     public <T extends ACHRecord> T readRecord(String line, Class<T> recordClass) {
         return reader.readRecord(line, recordClass);
     }
 
-    public ACHDocument read(InputStream is) {
+    public ACHDocumentUpdated read(InputStream is) {
         return read(is, DEFAULT_CHARSET);
     }
 
     @SuppressWarnings("WeakerAccess")
-    public ACHDocument read(InputStream is, Charset charset) {
+    public ACHDocumentUpdated read(InputStream is, Charset charset) {
         return reader.read(is, charset);
     }
 
-    public ACHDocument read(String string) {
+    public ACHDocumentUpdated read(String string) {
         return read(string, DEFAULT_CHARSET);
     }
 
     @SuppressWarnings("WeakerAccess")
-    public ACHDocument read(String string, Charset charset) {
+    public ACHDocumentUpdated read(String string, Charset charset) {
         try (ByteArrayInputStream is = new ByteArrayInputStream(string.getBytes(charset))) {
             return reader.read(is);
         } catch (IOException e) {
@@ -127,21 +125,21 @@ public class ACH implements ACHErrorMixIn {
         }
     }
 
-    public String write(ACHDocument document) {
+    public String write(ACHDocumentUpdated document) {
         return write(document, DEFAULT_CHARSET);
     }
 
     @SuppressWarnings("WeakerAccess")
-    public String write(ACHDocument document, Charset charset) {
+    public String write(ACHDocumentUpdated document, Charset charset) {
         return writer.write(document, charset);
     }
 
-    public void write(ACHDocument document, OutputStream outputStream) {
+    public void write(ACHDocumentUpdated document, OutputStream outputStream) {
         write(document, outputStream, DEFAULT_CHARSET);
     }
 
     @SuppressWarnings("WeakerAccess")
-    public void write(ACHDocument document, OutputStream outputStream, Charset charset) {
+    public void write(ACHDocumentUpdated document, OutputStream outputStream, Charset charset) {
         try {
             String str = writer.write(document, charset);
             outputStream.write(str.getBytes());
@@ -157,11 +155,11 @@ public class ACH implements ACHErrorMixIn {
         return metadata;
     }
 
-    public ACHReader getReader() {
+    public ACHReaderUpdated getReader() {
         return reader;
     }
 
-    public ACHWriter getWriter() {
+    public ACHWriterUpdated getWriter() {
         return writer;
     }
 

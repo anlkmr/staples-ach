@@ -1,4 +1,4 @@
-package com.emagia.ach.repo;
+package com.emagia.ach.repository;
 
 
 import com.emagia.ach.entity.Employee;

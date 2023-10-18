@@ -12,7 +12,9 @@ public class BatchHeaderEntity {
     @Id
     @SequenceGenerator(schema = "hr", name = "BATCH_HEADER_ID_SEQ", sequenceName  = "BATCH_HEADER_ID_SEQ", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "BATCH_HEADER_ID_SEQ")
+    @Column(name = "BATCH_HEADER_ID", nullable = true)
     private Long batchHeaderId;
+
     @Basic
     @Column(name = "RECORDTYPE", nullable = true)
     private String recordtype;
@@ -53,8 +55,6 @@ public class BatchHeaderEntity {
     @Basic
     @Column(name = "BATCHNUMBER", nullable = true)
     private String batchnumber;
-
-
 
 
     public String getRecordtype() {
