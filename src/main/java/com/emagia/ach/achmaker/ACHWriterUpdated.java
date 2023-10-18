@@ -79,7 +79,9 @@ public class ACHWriterUpdated extends ACHProcessorUpdated {
                 writeLine(writer, emptyLine, false);
             }
             if(!document.getBlockingFileControlRecords().isEmpty()) {
+                String emptyLine = new String(new char[ACHRecord.ACH_RECORD_LENGTH]).replace("\0", "9");
                 document.getBlockingFileControlRecords().forEach(b -> writeBlockingFileRecord(b, writer));
+                writeLine(writer, emptyLine, false);
             }
 
             writer.flush();
