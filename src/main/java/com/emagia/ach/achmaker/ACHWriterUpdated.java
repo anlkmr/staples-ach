@@ -66,9 +66,9 @@ public class ACHWriterUpdated extends ACHProcessorUpdated {
                 fileControl.setBlockCount(blockCount);
             }
 
-            writeLine(writer, writeRecord(fileControl), true);
+            writeLine(writer, writeRecord(fileControl), false);
 
-            if (lines % blockSize != 0 && blockAligning) {
+            /*if (lines % blockSize != 0 && blockAligning) {
                 String emptyLine = new String(new char[ACHRecord.ACH_RECORD_LENGTH]).replace("\0", "9");
                 writer.write(LINE_SEPARATOR);
                 int trailingLinesLeft = blockSize - (lines % blockSize) - 1;
@@ -76,11 +76,18 @@ public class ACHWriterUpdated extends ACHProcessorUpdated {
                     writeLine(writer, emptyLine);
                 }
 
-                writeLine(writer, emptyLine, false);
-            }
+                writeLine(writer, emptyLine, true);
+            }*/
             if(!document.getBlockingFileControlRecords().isEmpty()) {
+                writer.write(LINE_SEPARATOR);
                 String emptyLine = new String(new char[ACHRecord.ACH_RECORD_LENGTH]).replace("\0", "9");
-                document.getBlockingFileControlRecords().forEach(b -> writeBlockingFileRecord(b, writer));
+                document.getBlockingFileControlRecords().forEach(b -> {
+                    try {
+                        writeLine(writer, emptyLine);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
                 writeLine(writer, emptyLine, false);
             }
 
@@ -109,14 +116,11 @@ public class ACHWriterUpdated extends ACHProcessorUpdated {
     }
 
     private void writeBlockingFileRecord(BlockingFileControlRecord blockingFileControlRecord, OutputStreamWriter writer) {
-        try {
 
-            //writeLine(writer, writeRecord(blockingFileControlRecord));
-            writeLine(writer, blockingFileControlRecord.getFiller9s(), true);
+        //writeLine(writer, writeRecord(blockingFileControlRecord));
+        String emptyLine = new String(new char[ACHRecord.ACH_RECORD_LENGTH]).replace("\0", "9");
+        //writeLine(writer, blockingFileControlRecord.getFiller9s(), true);
 
-        } catch (IOException e) {
-            throw error("Error writing ACH batch", e);
-        }
     }
 
     private void writeBatchDetail(ACHBatchDetail detail, OutputStreamWriter writer) {

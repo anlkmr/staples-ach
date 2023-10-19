@@ -92,7 +92,7 @@ public class AchfileserviceImpl implements Achfileservice {
         achDocument.setBatches(getBatchRecordList(entity));
         achDocument.setFileControl(createFileControl());
         //AchUtils.numberOfBlockingFileRecords(blockCount);
-        achDocument.addBlockingFileControlRecords(AchUtils.numberOfBlockingFileRecords(blockCount));
+        //achDocument.addBlockingFileControlRecords(AchUtils.numberOfBlockingFileRecords(blockCount));
         achDocument.setNumberOfLines(6);
         return achDocument;
     }
@@ -184,7 +184,7 @@ public class AchfileserviceImpl implements Achfileservice {
             //fileControl.setTotalDebits(BigDecimal.valueOf(Long.valueOf(fileControlEntity.getTotaldebitEntryAmount())));
             fileControl.setTotalDebits(entryTotalDebits);
             //fileControl.setTotalCredits(BigDecimal.valueOf(Long.valueOf(fileControlEntity.getTotalcreditEntryAmount())));
-            //fileControl.setTotalCredits(BigDecimal.valueOf(Long.valueOf(000000000000)));
+            fileControl.setTotalCredits(new BigDecimal(0));
         }
         fileControl.setLineNumber(6);
         fileControl.setRecord("file control");
@@ -264,7 +264,7 @@ public class AchfileserviceImpl implements Achfileservice {
         //entryCTXDetail.setCheckDigit(Short.valueOf("1"));//1
         entryCTXDetail.setDfiAccountNumber(paymentsCaptureBO.getCashAbtBankAccNumber());//17
         //entryCTXDetail.setDfiAccountNumber("000123456789     ");//17
-        entryCTXDetail.setAmount(paymentsCaptureBO.getCashPaytAmountPaid());//10
+        entryCTXDetail.setAmount(paymentsCaptureBO.getCashPayTotalAmount());//10
         //entryCTXDetail.setAmount(BigDecimal.valueOf(00000022.2));//10
         entryCTXDetail.setIdentificationNumber(paymentsCaptureBO.getCashCusNumber());//15//Individualid
         //entryCTXDetail.setIdentificationNumber("CUSTID00123    ");//15
@@ -338,8 +338,8 @@ public class AchfileserviceImpl implements Achfileservice {
         if (batchHeaderEntityOptional.isPresent()) {
             BatchHeaderEntity batchHeaderEntity = batchHeaderEntityOptional.get();
             generalBatchHeader.getRecordTypeCode();
-            generalBatchHeader.setServiceClassCode(batchHeaderEntity.getServiceclasscode());
-            //generalBatchHeader.setServiceClassCode("220");
+            //generalBatchHeader.setServiceClassCode(batchHeaderEntity.getServiceclasscode());
+            generalBatchHeader.setServiceClassCode("225");
             generalBatchHeader.setCompanyName(batchHeaderEntity.getCompanyNamePayeePayor());
             //generalBatchHeader.setCompanyName("STAPLES CONTRACT");
             generalBatchHeader.setCompanyDiscretionaryData(batchHeaderEntity.getCompanyDiscretionaryData());
