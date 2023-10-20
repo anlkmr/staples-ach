@@ -1,7 +1,7 @@
 package com.emagia.ach.utils;
 
 public class AchUtils {
-    public static int calculateCheckDigit(String rtNumber){
+    public static short calculateCheckDigit(String rtNumber){
 
         if(rtNumber.length()==8){
         String[] digits = String.valueOf(rtNumber.substring(0,8)).split("");
@@ -14,7 +14,7 @@ public class AchUtils {
         total_sum = total_sum + Integer.valueOf(digits[6])*3;
         total_sum = total_sum + Integer.valueOf(digits[7])*7;
         System.out.println(round(total_sum));
-        return Math.abs(round(total_sum)-total_sum);
+        return (short) Math.abs(round(total_sum)-total_sum);
         }
         return 0;
     }

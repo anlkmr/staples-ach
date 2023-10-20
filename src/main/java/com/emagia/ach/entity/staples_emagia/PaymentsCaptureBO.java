@@ -2,10 +2,14 @@ package com.emagia.ach.entity.staples_emagia;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.util.Date;
 
 public class PaymentsCaptureBO implements Serializable {
+
+    private BigInteger cashPayId;
+    private BigInteger cashPaytPaymentId;
     private String cashPayType;
     private BigDecimal cashPayTotalAmount;
     private Date cashPayDate;
@@ -16,6 +20,7 @@ public class PaymentsCaptureBO implements Serializable {
     private String cashPaytCustomerId;
     private Date cashPaytDate;
     private Date cashPaytCreationDate;
+    private String cashPaytTransactionId;
     private String cashAbtBankName;
     private String cashAbtBankAccNumber;
     private String cashAbtRoutingNumber;
@@ -26,7 +31,8 @@ public class PaymentsCaptureBO implements Serializable {
     private BigDecimal cashCusCreditLimit;
     private String cashCusParentCustomerId;
 
-    public PaymentsCaptureBO(String cashPayType, BigDecimal cashPayTotalAmount, Date cashPayDate, Date cashPayCreationDate, String cashPayAttribute4, BigDecimal cashPaytAmountPaid, String cashPaytHfm, String cashPaytCustomerId, Date cashPaytDate, Date cashPaytCreationDate, String cashAbtBankName, String cashAbtBankAccNumber, String cashAbtRoutingNumber, String cashCusId, String cashCusCompanyId, String cashCusNumber, String cashCusName, BigDecimal cashCusCreditLimit, String cashCusParentCustomerId) {
+    public PaymentsCaptureBO(BigInteger cashPayId, BigInteger cashPaytPaymentId, String cashPayType, BigDecimal cashPayTotalAmount, Date cashPayDate, Date cashPayCreationDate, String cashPayAttribute4, BigDecimal cashPaytAmountPaid, String cashPaytHfm, String cashPaytCustomerId, Date cashPaytDate, Date cashPaytCreationDate, String cashPaytTransactionId, String cashAbtBankName, String cashAbtBankAccNumber, String cashAbtRoutingNumber, String cashCusId, String cashCusCompanyId, String cashCusNumber, String cashCusName, BigDecimal cashCusCreditLimit, String cashCusParentCustomerId) {
+        this.cashPayId = cashPayId;
         this.cashPayType = cashPayType;
         this.cashPayTotalAmount = cashPayTotalAmount;
         this.cashPayDate = cashPayDate;
@@ -37,6 +43,7 @@ public class PaymentsCaptureBO implements Serializable {
         this.cashPaytCustomerId = cashPaytCustomerId;
         this.cashPaytDate = cashPaytDate;
         this.cashPaytCreationDate = cashPaytCreationDate;
+        this.cashPaytTransactionId = cashPaytTransactionId;
         this.cashAbtBankName = cashAbtBankName;
         this.cashAbtBankAccNumber = cashAbtBankAccNumber;
         this.cashAbtRoutingNumber = cashAbtRoutingNumber;
@@ -46,6 +53,31 @@ public class PaymentsCaptureBO implements Serializable {
         this.cashCusName = cashCusName;
         this.cashCusCreditLimit = cashCusCreditLimit;
         this.cashCusParentCustomerId = cashCusParentCustomerId;
+    }
+
+
+    public BigInteger getCashPayId() {
+        return cashPayId;
+    }
+
+    public void setCashPayId(BigInteger cashPayId) {
+        this.cashPayId = cashPayId;
+    }
+
+    public BigInteger getCashPaytPaymentId() {
+        return cashPaytPaymentId;
+    }
+
+    public String getCashPaytTransactionId() {
+        return cashPaytTransactionId;
+    }
+
+    public void setCashPaytTransactionId(String cashPaytTransactionId) {
+        this.cashPaytTransactionId = cashPaytTransactionId;
+    }
+
+    public void setCashPaytPaymentId(BigInteger cashPaytPaymentId) {
+        this.cashPaytPaymentId = cashPaytPaymentId;
     }
 
     public String getCashPayType() {
