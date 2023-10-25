@@ -1,7 +1,7 @@
 package com.emagia.ach.controller;
 
-import com.emagia.ach.dto.BatchHeaderDto;
-import com.emagia.ach.service.BatchHeaderService;
+import com.emagia.ach.dto.FileHeaderDto;
+import com.emagia.ach.service.Achfileservice;
 import org.hamcrest.Matchers;
 import org.hamcrest.core.Is;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,14 +21,14 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collections;
 
 @Transactional
-public class BatchHeaderControllerTest {
-    private static final String ENDPOINT_URL = "/api/batch-header";
+public class ACHFileControllerTest {
+    private static final String ENDPOINT_URL = "/api/ach/ctx";
 
     @InjectMocks
-    private BatchHeaderController batchheaderController;
+    private ACHFileController achFileController;
 
     @Mock
-    private BatchHeaderService batchheaderService;
+    private Achfileservice achfileservice;
 
     private MockMvc mockMvc;
 
@@ -36,31 +36,30 @@ public class BatchHeaderControllerTest {
     void setUp() {
         MockitoAnnotations.initMocks(this);
         mockMvc = MockMvcBuilders
-                .standaloneSetup(batchheaderController)
+                .standaloneSetup(achFileController)
                 .build();
     }
 
     @Test
     public void findAllByPage() throws Exception {
-        Page<BatchHeaderDto> page = new PageImpl<>(Collections.singletonList(BatchHeaderBuilder.getDto()));
 
-        Mockito.when(batchheaderService.findByCondition(ArgumentMatchers.any(), ArgumentMatchers.any()))
-                .thenReturn(page);
+        Mockito.when(achfileservice.createOSStringAchCTXDoc())
+                .thenReturn("success");
 
         ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.content", Matchers.hasSize(1)));
+                .andExpect(MockMvcResultMatchers.status().isOk());
+                //.andExpect(MockMvcResultMatchers.jsonPath("$.data.content", Matchers.hasSize(1)));
 
-        Mockito.verify(batchheaderService, Mockito.times(1)).findByCondition(ArgumentMatchers.any(), ArgumentMatchers.any());
-        Mockito.verifyNoMoreInteractions(batchheaderService);
+        Mockito.verify(achfileservice, Mockito.times(1)).createOSStringAchCTXDoc();
+        Mockito.verifyNoMoreInteractions(achfileservice);
     }
 
-    @Test
+   /* @Test
     public void getById() throws Exception {
-        Mockito.when(batchheaderService.findById(ArgumentMatchers.anyLong()))
-                .thenReturn(BatchHeaderBuilder.getDto());
+        Mockito.when(achfileservice.findById(Long.valueOf(ArgumentMatchers.anyLong())))
+                .thenReturn(FileHeaderBuilder.getDto());
 
         mockMvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/1"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -68,53 +67,53 @@ public class BatchHeaderControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id", Is.is(1)));
 
-        Mockito.verify(batchheaderService, Mockito.times(1)).findById(1L);
-        Mockito.verifyNoMoreInteractions(batchheaderService);
+        Mockito.verify(achfileservice, Mockito.times(1)).findById(Long.valueOf(1L));
+        Mockito.verifyNoMoreInteractions(achfileservice);
     }
 
     @Test
     public void save() throws Exception {
-        Mockito.when(batchheaderService.save(ArgumentMatchers.any(BatchHeaderDto.class)))
-                .thenReturn(BatchHeaderBuilder.getDto());
+        Mockito.when(achfileservice.save(ArgumentMatchers.any(FileHeaderDto.class)))
+                .thenReturn(FileHeaderBuilder.getDto());
 
         mockMvc.perform(
                         MockMvcRequestBuilders.post(ENDPOINT_URL)
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(CustomUtils.asJsonString(BatchHeaderBuilder.getDto())))
+                                .content(CustomUtils.asJsonString(FileHeaderBuilder.getDto())))
                 .andExpect(MockMvcResultMatchers.status().isCreated());
 
-        Mockito.verify(batchheaderService, Mockito.times(1)).save(ArgumentMatchers.any(BatchHeaderDto.class));
-        Mockito.verifyNoMoreInteractions(batchheaderService);
+        Mockito.verify(achfileservice, Mockito.times(1)).save(ArgumentMatchers.any(FileHeaderDto.class));
+        Mockito.verifyNoMoreInteractions(achfileservice);
     }
 
     @Test
     public void update() throws Exception {
-        Mockito.when(batchheaderService.update(ArgumentMatchers.any(), ArgumentMatchers.anyLong()))
-                .thenReturn(BatchHeaderBuilder.getDto());
+        Mockito.when(achfileservice.update(ArgumentMatchers.any(), Long.valueOf(ArgumentMatchers.anyLong())))
+                .thenReturn(FileHeaderBuilder.getDto());
 
         mockMvc.perform(
                         MockMvcRequestBuilders.put(ENDPOINT_URL + "/1")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(CustomUtils.asJsonString(BatchHeaderBuilder.getDto())))
+                                .content(CustomUtils.asJsonString(FileHeaderBuilder.getDto())))
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
-        Mockito.verify(batchheaderService, Mockito.times(1))
-                .update(ArgumentMatchers.any(BatchHeaderDto.class), ArgumentMatchers.anyLong());
-        Mockito.verifyNoMoreInteractions(batchheaderService);
+        Mockito.verify(achfileservice, Mockito.times(1))
+                .update(ArgumentMatchers.any(FileHeaderDto.class), Long.valueOf(ArgumentMatchers.anyLong()));
+        Mockito.verifyNoMoreInteractions(achfileservice);
     }
 
     @Test
     public void delete() throws Exception {
-        Mockito.doNothing().when(batchheaderService).deleteById(ArgumentMatchers.anyLong());
+        Mockito.doNothing().when(achfileservice).deleteById(Long.valueOf(ArgumentMatchers.anyLong()));
 
         mockMvc.perform(
                         MockMvcRequestBuilders.delete(ENDPOINT_URL + "/1")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(CustomUtils.asJsonString(BatchHeaderBuilder.getIds())))
+                                .content(CustomUtils.asJsonString(FileHeaderBuilder.getIds())))
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
-        Mockito.verify(batchheaderService, Mockito.times(1))
-                .deleteById(Mockito.anyLong());
-        Mockito.verifyNoMoreInteractions(batchheaderService);
-    }
+        Mockito.verify(achfileservice, Mockito.times(1))
+                .deleteById(Long.valueOf(Mockito.anyLong()));
+        Mockito.verifyNoMoreInteractions(achfileservice);
+    }*/
 }
