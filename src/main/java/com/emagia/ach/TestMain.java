@@ -9,8 +9,7 @@ import com.emagia.ach.achmaker.ACH;
 import com.emagia.ach.achmaker.ACHDocumentUpdated;
 import com.emagia.ach.achmaker.CTXEntryDetailUpdated;
 
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -18,7 +17,7 @@ import java.util.Calendar;
 import java.util.List;
 
 public class TestMain {
-    public static void main(String args[]){
+    public static void main(String args[]) throws IOException {
         System.out.println("test *****--********");
         //UTF-8
         ACH ach = new ACH();
@@ -28,9 +27,35 @@ public class TestMain {
         achDocument.setFileControl(createFileControl());
         achDocument.setNumberOfLines(6);
         String result = ach.write(achDocument);
+        InputStream targetStream = new ByteArrayInputStream(result.getBytes());
+       /* OutputStream outputStream = null;
+        ach.write(achDocument,outputStream);
+*/
+
+        PipedOutputStream out = new PipedOutputStream();
+        ach.write(achDocument,out);
+        PipedInputStream in = new PipedInputStream(out);
+        //outputStream.write(str.getBytes());
+        /*new Thread(new Runnable() {
+            public void run () {
+                // try-with-resources here
+                // putting the try block outside the Thread will cause the
+                // PipedOutputStream resource to close before the Runnable finishes
+                try (final PipedOutputStream out = new PipedOutputStream(in)) {
+                    // write the original OutputStream to the PipedOutputStream
+                    // note that in order for the below method to work, you need
+                    // to ensure that the data has finished writing to the
+                    // ByteArrayOutputStream
+                    originalByteArrayOutputStream.writeTo(out);
+                }
+                catch (IOException e) {
+                    // logging and exception handling should go here
+                }
+            }
+        }).start();*/
 
         try {
-            FileWriter myWriter = new FileWriter("achtest1.ach");
+            FileWriter myWriter = new FileWriter("/achfiles/achtest1.ach");
             myWriter.write(result);
             myWriter.close();
         } catch (IOException e) {

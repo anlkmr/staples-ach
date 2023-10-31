@@ -12,6 +12,7 @@ import com.emagia.ach.entity.staples_emagia.PaymentsCaptureBO;
 import com.emagia.ach.exception.AnotherCustomException;
 import com.emagia.ach.repository.*;
 import com.emagia.ach.service.Achfileservice;
+import com.emagia.ach.service.FileUploadSFTPService;
 import com.emagia.ach.staples_emagia.repository.StaplesEmagiaMISCRepository;
 import com.emagia.ach.utils.AchStringUtil;
 import com.emagia.ach.utils.AchUtils;
@@ -21,8 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
@@ -48,6 +48,8 @@ public class AchfileserviceImpl implements Achfileservice {
     private FileControlRepository fileControlRepository;
     @Autowired
     private StaplesEmagiaMISCRepository staplesEmagiaMISCRepository;
+    @Autowired
+    private FileUploadSFTPService fileUploadSFTPService;
     private int entrySequenceNumber;
     private final String RT_Number_WellsFargo = "09100001";
     private Integer totalEntryAddendaCount;
@@ -73,9 +75,14 @@ public class AchfileserviceImpl implements Achfileservice {
         log.info("file header configuration: {}",entity);
         FileWriter myWriter = null;
         try {
-            myWriter = new FileWriter("achtest1" + companyNameImdOrigName + ".ach");
+
+            var fileNameToCreate = "achtest1" + companyNameImdOrigName + ".ach";
+            myWriter = new FileWriter(fileNameToCreate);
             log.info("created file writer for : {}",companyNameImdOrigName);
-            myWriter.write(ach.write(createAchDocument(entity)));
+            //myWriter.write(ach.write(createAchDocument(entity)));
+            InputStream targetStream = new ByteArrayInputStream(ach.write(createAchDocument(entity)).getBytes());
+
+            fileUploadSFTPService.uplodaToEmagiaSftp(targetStream, fileNameToCreate);
             log.info("closing writer: {}",myWriter);
             myWriter.close();
         } catch (Exception e) {
