@@ -10,6 +10,8 @@ import com.emagia.ach.achmaker.CTXEntryDetailUpdated;
 import com.emagia.ach.entity.*;
 import com.emagia.ach.entity.staples_emagia.PaymentsCaptureBO;
 import com.emagia.ach.exception.AnotherCustomException;
+import com.emagia.ach.pgp.PgpDecryptionUtil;
+import com.emagia.ach.pgp.PgpEncryptionUtil;
 import com.emagia.ach.repository.*;
 import com.emagia.ach.service.Achfileservice;
 import com.emagia.ach.service.FileUploadSFTPService;
@@ -18,6 +20,8 @@ import com.emagia.ach.utils.AchStringUtil;
 import com.emagia.ach.utils.AchUtils;
 import com.emagia.ach.utils.BU;
 import lombok.extern.log4j.Log4j2;
+import org.bouncycastle.bcpg.CompressionAlgorithmTags;
+import org.bouncycastle.bcpg.SymmetricKeyAlgorithmTags;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +29,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.net.URL;
+import java.nio.file.Files;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -50,6 +56,9 @@ public class AchfileserviceImpl implements Achfileservice {
     private StaplesEmagiaMISCRepository staplesEmagiaMISCRepository;
     @Autowired
     private FileUploadSFTPService fileUploadSFTPService;
+
+    PgpEncryptionUtil pgpEncryptionUtil;
+    PgpDecryptionUtil pgpDecryptionUtil;
     private int entrySequenceNumber;
     private final String RT_Number_WellsFargo = "09100001";
     private Integer totalEntryAddendaCount;
@@ -60,31 +69,61 @@ public class AchfileserviceImpl implements Achfileservice {
     private int blockCount;
     private Integer addendaSequenceNumber;
 
+
+    private static URL loadResource(String resourcePath) {
+        return Optional.ofNullable(AchfileserviceImpl.class.getResource(resourcePath))
+                .orElseThrow(() -> new IllegalArgumentException("Resource not found"));
+    }
+    private final URL publicKey = loadResource("/public.pgp");
+    private final URL privateKey = loadResource("/private.pgp");
+
+    private static final String passkey = "dummy";
+
     @Override
     public String createOSStringAchCTXDoc() {
         log.info("Entered - "+getClass());
         log.info("Fetching file Header configuration.");
         Optional<List<FileHeaderEntity>> fileHeaderEntityOptional = Optional.of(fileHeaderRepository.findAll());
         log.info("Fetching file Header configuration completed");
-        fileHeaderEntityOptional.ifPresent(fileHeaderEntities -> fileHeaderEntities.forEach(entity -> achFileWriter(entity, entity.getCompanyNameImdOrigName())));
+        fileHeaderEntityOptional.ifPresent(fileHeaderEntities -> fileHeaderEntities.forEach(entity -> achFileWriter(entity, entity.getCompanyNameImdOrigName().replaceAll(" ", ""))));
         log.info("Exiting - "+getClass());
         return "success";
     }
 
     void achFileWriter(FileHeaderEntity entity, String companyNameImdOrigName) {
         log.info("file header configuration: {}",entity);
+        FileWriter myWriterEnc = null;
+        FileWriter myWriterDec = null;
         FileWriter myWriter = null;
         try {
 
-            var fileNameToCreate = "achtest1" + companyNameImdOrigName + ".ach";
-            myWriter = new FileWriter(fileNameToCreate);
+            var fileNameToCreateACHFile = "achtest1" + companyNameImdOrigName + ".ach";
+            var fileNameToOriginalACHFile = "achtest1" + companyNameImdOrigName + ".ach";
+            var fileNameToCreateEncryptFile = "achtest1" + companyNameImdOrigName + "EncryptedCAST5";
+            myWriterEnc = new FileWriter(fileNameToCreateEncryptFile);
+            myWriterDec = new FileWriter(fileNameToCreateACHFile);
+            myWriter = new FileWriter(fileNameToOriginalACHFile);
             log.info("created file writer for : {}",companyNameImdOrigName);
-            //myWriter.write(ach.write(createAchDocument(entity)));
-            InputStream targetStream = new ByteArrayInputStream(ach.write(createAchDocument(entity)).getBytes());
+            myWriter.write(ach.write(createAchDocument(entity)));
+            InputStream originalFile = new ByteArrayInputStream(ach.write(createAchDocument(entity)).getBytes());
 
-            fileUploadSFTPService.uplodaToEmagiaSftp(targetStream, fileNameToCreate);
-            log.info("closing writer: {}",myWriter);
-            myWriter.close();
+            pgpEncryptionUtil = PgpEncryptionUtil.builder()
+                    .armor(true)
+                    .compressionAlgorithm(CompressionAlgorithmTags.ZIP)
+                    .symmetricKeyAlgorithm(SymmetricKeyAlgorithmTags.CAST5)
+                    .withIntegrityCheck(true)
+                    .build();
+
+            byte[] encryptedIn = pgpEncryptionUtil.encrypt(ach.write(createAchDocument(entity)).getBytes(), publicKey.openStream());
+            myWriterEnc.write(Arrays.toString(encryptedIn));
+            //fileUploadSFTPService.uplodaToEmagiaSftp(targetStream, fileNameToCreateEncryptFile);
+            pgpDecryptionUtil = new PgpDecryptionUtil(privateKey.openStream(), passkey);
+            byte[] decryptedBytes = pgpDecryptionUtil.decrypt(encryptedIn);
+            myWriterDec.write(Arrays.toString(decryptedBytes));
+            log.info("closing writer: {}",myWriterEnc);
+            log.info("closing writer: {}",myWriterDec);
+            myWriterDec.close();
+            myWriterEnc.close();
         } catch (Exception e) {
             log.error("caught exception : {}",e.getMessage());
             throw new AnotherCustomException(e.getMessage());

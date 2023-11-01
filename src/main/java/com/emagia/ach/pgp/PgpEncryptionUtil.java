@@ -13,6 +13,7 @@ import org.bouncycastle.openpgp.PGPEncryptedDataGenerator;
 import org.bouncycastle.openpgp.PGPException;
 import org.bouncycastle.openpgp.operator.jcajce.JcePGPDataEncryptorBuilder;
 import org.bouncycastle.openpgp.operator.jcajce.JcePublicKeyKeyEncryptionMethodGenerator;
+import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -36,7 +37,7 @@ public class PgpEncryptionUtil {
     @Builder.Default
     private int compressionAlgorithm = CompressionAlgorithmTags.ZIP;
     @Builder.Default
-    private int symmetricKeyAlgorithm = SymmetricKeyAlgorithmTags.AES_128;
+    private int symmetricKeyAlgorithm = SymmetricKeyAlgorithmTags.CAST5;
     @Builder.Default
     private boolean armor = true;
     @Builder.Default
