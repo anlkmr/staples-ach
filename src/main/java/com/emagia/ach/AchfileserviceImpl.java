@@ -10,8 +10,6 @@ import com.emagia.ach.achmaker.CTXEntryDetailUpdated;
 import com.emagia.ach.entity.*;
 import com.emagia.ach.entity.staples_emagia.PaymentsCaptureBO;
 import com.emagia.ach.exception.AnotherCustomException;
-import com.emagia.ach.pgp.PgpDecryptionUtil;
-import com.emagia.ach.pgp.PgpEncryptionUtil;
 import com.emagia.ach.repository.*;
 import com.emagia.ach.service.Achfileservice;
 import com.emagia.ach.service.FileUploadSFTPService;
@@ -56,9 +54,9 @@ public class AchfileserviceImpl implements Achfileservice {
     private StaplesEmagiaMISCRepository staplesEmagiaMISCRepository;
     @Autowired
     private FileUploadSFTPService fileUploadSFTPService;
-
+/*
     PgpEncryptionUtil pgpEncryptionUtil;
-    PgpDecryptionUtil pgpDecryptionUtil;
+    PgpDecryptionUtil pgpDecryptionUtil;*/
     private int entrySequenceNumber;
     private final String RT_Number_WellsFargo = "09100001";
     private Integer totalEntryAddendaCount;
@@ -98,19 +96,19 @@ public class AchfileserviceImpl implements Achfileservice {
         try {
 
             var fileNameToCreateACHFile = "achtest1" + companyNameImdOrigName + ".ach";
-            var fileNameToOriginalACHFile = "achtest1" + companyNameImdOrigName + ".ach";
-            var fileNameToCreateEncryptFile = "achtest1" + companyNameImdOrigName + "EncryptedCAST5";
+            var fileNameToOriginalDECRYPTACHFile = "achtest1" + companyNameImdOrigName+"DECRYPT" + ".ach";
+            var fileNameToCreateEncryptFile = "achtest1" + companyNameImdOrigName + ".pgp";
             myWriterEnc = new FileWriter(fileNameToCreateEncryptFile);
-            myWriterDec = new FileWriter(fileNameToCreateACHFile);
-            myWriter = new FileWriter(fileNameToOriginalACHFile);
+            myWriterDec = new FileWriter(fileNameToOriginalDECRYPTACHFile);
+            myWriter = new FileWriter(fileNameToCreateACHFile);
             log.info("created file writer for : {}",companyNameImdOrigName);
             myWriter.write(ach.write(createAchDocument(entity)));
             InputStream originalFile = new ByteArrayInputStream(ach.write(createAchDocument(entity)).getBytes());
 
-            pgpEncryptionUtil = PgpEncryptionUtil.builder()
+            /*pgpEncryptionUtil = PgpEncryptionUtil.builder()
                     .armor(true)
                     .compressionAlgorithm(CompressionAlgorithmTags.ZIP)
-                    .symmetricKeyAlgorithm(SymmetricKeyAlgorithmTags.CAST5)
+                    .symmetricKeyAlgorithm(SymmetricKeyAlgorithmTags.AES_256)
                     .withIntegrityCheck(true)
                     .build();
 
@@ -118,12 +116,13 @@ public class AchfileserviceImpl implements Achfileservice {
             myWriterEnc.write(Arrays.toString(encryptedIn));
             //fileUploadSFTPService.uplodaToEmagiaSftp(targetStream, fileNameToCreateEncryptFile);
             pgpDecryptionUtil = new PgpDecryptionUtil(privateKey.openStream(), passkey);
-            byte[] decryptedBytes = pgpDecryptionUtil.decrypt(encryptedIn);
-            myWriterDec.write(Arrays.toString(decryptedBytes));
+            byte[] decryptedBytes = pgpDecryptionUtil.decrypt(encryptedIn);*/
+            //myWriterDec.write(ach.read(Arrays.toString(decryptedBytes)).toString());
             log.info("closing writer: {}",myWriterEnc);
             log.info("closing writer: {}",myWriterDec);
             myWriterDec.close();
             myWriterEnc.close();
+            myWriter.close();
         } catch (Exception e) {
             log.error("caught exception : {}",e.getMessage());
             throw new AnotherCustomException(e.getMessage());
