@@ -18,7 +18,7 @@ import java.util.Iterator;
 public class PgpServiceEncryptSign {
 
 
-    public void encryptAndSignData(String message, String publicKeyPath, String privateKeyPath, char[] privateKeyPassword, String outputFilePath) throws IOException, PGPException {
+    public void encryptAndSignData(String inputFilePath, String publicKeyPath, String privateKeyPath, char[] privateKeyPassword, String outputFilePath) throws IOException, PGPException {
         OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(outputFilePath));
 
         // Load recipient's public key
@@ -27,14 +27,16 @@ public class PgpServiceEncryptSign {
         // Load sender's private key
         PGPSecretKey secretKey = readSecretKey(new FileInputStream(privateKeyPath));
 
-        // Encrypt and sign the message
-        encryptAndSign(message, outputStream, publicKey, secretKey, privateKeyPassword);
+        // Encrypt and sign the inputFilePath
+        encryptAndSign(inputFilePath, outputStream, publicKey, secretKey, privateKeyPassword);
 
         outputStream.close();
     }
 
-    private void encryptAndSign(String message, OutputStream outputStream, PGPPublicKey publicKey, PGPSecretKey secretKey, char[] privateKeyPassword) throws IOException, PGPException {
+    private void encryptAndSign(String inputFilePath, OutputStream outputStream, PGPPublicKey publicKey, PGPSecretKey secretKey, char[] privateKeyPassword) throws IOException, PGPException {
         // Create an encrypted data generator
+
+        InputStream inputFileToProcess = new FileInputStream(inputFilePath);
         PGPEncryptedDataGenerator encryptedDataGenerator = new PGPEncryptedDataGenerator(
                 new JcePGPDataEncryptorBuilder(SymmetricKeyAlgorithmTags.AES_256)
                         .setWithIntegrityPacket(true)
@@ -63,11 +65,12 @@ public class PgpServiceEncryptSign {
         signatureGenerator.generateOnePassVersion(false).encode(encryptedOut);
 
         PGPLiteralDataGenerator literalDataGenerator = new PGPLiteralDataGenerator();
-        OutputStream literalOut = literalDataGenerator.open(encryptedOut, PGPLiteralData.BINARY, "", message.getBytes().length, new Date());
-        literalOut.write(message.getBytes());
+        //inputFileToProcess.readAllBytes();
+        OutputStream literalOut = literalDataGenerator.open(encryptedOut, PGPLiteralData.UTF8, "", inputFileToProcess.readAllBytes().length, new Date());
+        literalOut.write(inputFileToProcess.readAllBytes());
         literalOut.close();
 
-        signatureGenerator.update(message.getBytes());
+        signatureGenerator.update(inputFileToProcess.readAllBytes());
         signatureGenerator.generate().encode(encryptedOut);
 
         encryptedOut.close();

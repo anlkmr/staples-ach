@@ -26,22 +26,22 @@ public class PgpEncryptionController {
 
 	@Value("src/main/resources/AnilPGP_Public.asc")
 	private String publicKeyPath;
-	@Value("src/main/resources/AnilPGP_Private.asc")
+	@Value("src/main/resources/Anil2_Private.asc")
 	private String privateKeyPath;
 	@Value("src/main/resources/achtest1StaplesEncSigned.asc")
 	private String inputEncryptedSignedFile;
 	@GetMapping(value="/pgpenc")
 	public void pgpenc() throws NoSuchProviderException, IOException, PGPException
 	{
-		String inputFile="src/main/resources/achtest1Staples & CommercialLLC.ach";
+		String inputFilePath="src/main/resources/achtest1Staples & CommercialLLC.ach";
 		//pgpEncryption.encrypt(inputFile, "src/main/resources/achtest1StaplesEnc.pgp");
 
 		char[] privateKeyPassword = new char[]{'h','a','n','u','m','a','n'};
 		String outputEncryptSignedFilePath = "src/main/resources/achtest1StaplesEncSigned.asc";
-		String outputDecryptUnSignedFilePath = "src/main/resources/achtest1StaplesDeCryptUnSigned.asc";
-		pgpServiceEncryptSign.encryptAndSignData("hi",publicKeyPath,privateKeyPath,privateKeyPassword,outputEncryptSignedFilePath);
+		String outputDecryptUnSignedFilePath = "src/main/resources/achtest1StaplesDeCryptUnSigned.ach";
+		pgpServiceEncryptSign.encryptAndSignData(inputFilePath,publicKeyPath,privateKeyPath,privateKeyPassword,outputEncryptSignedFilePath);
 
-		pgpServiceDecryptUnsign.decryptAndVerifyData(inputEncryptedSignedFile,publicKeyPath,privateKeyPath,privateKeyPassword,outputDecryptUnSignedFilePath);
+		//pgpServiceDecryptUnsign.decryptAndVerifyData(inputEncryptedSignedFile,publicKeyPath,privateKeyPath,privateKeyPassword,outputDecryptUnSignedFilePath);
 
 		 }
 		
