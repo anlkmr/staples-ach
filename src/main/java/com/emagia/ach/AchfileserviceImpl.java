@@ -10,6 +10,7 @@ import com.emagia.ach.achmaker.CTXEntryDetailUpdated;
 import com.emagia.ach.entity.*;
 import com.emagia.ach.entity.staples_emagia.PaymentsCaptureBO;
 import com.emagia.ach.exception.AnotherCustomException;
+import com.emagia.ach.pgp.PgpServiceEncryptSign;
 import com.emagia.ach.repository.*;
 import com.emagia.ach.service.Achfileservice;
 import com.emagia.ach.service.FileUploadSFTPService;
@@ -18,8 +19,6 @@ import com.emagia.ach.utils.AchStringUtil;
 import com.emagia.ach.utils.AchUtils;
 import com.emagia.ach.utils.BU;
 import lombok.extern.log4j.Log4j2;
-import org.bouncycastle.bcpg.CompressionAlgorithmTags;
-import org.bouncycastle.bcpg.SymmetricKeyAlgorithmTags;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +27,6 @@ import java.io.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URL;
-import java.nio.file.Files;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -54,6 +52,8 @@ public class AchfileserviceImpl implements Achfileservice {
     private StaplesEmagiaMISCRepository staplesEmagiaMISCRepository;
     @Autowired
     private FileUploadSFTPService fileUploadSFTPService;
+    @Autowired
+    private PgpServiceEncryptSign pgpServiceEncryptSign;
 /*
     PgpEncryptionUtil pgpEncryptionUtil;
     PgpDecryptionUtil pgpDecryptionUtil;*/
