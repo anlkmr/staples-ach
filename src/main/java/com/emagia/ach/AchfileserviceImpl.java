@@ -10,6 +10,9 @@ import com.emagia.ach.achmaker.CTXEntryDetailUpdated;
 import com.emagia.ach.entity.*;
 import com.emagia.ach.entity.staples_emagia.PaymentsCaptureBO;
 import com.emagia.ach.exception.AnotherCustomException;
+import com.emagia.ach.pgp.PgpDecryptionUtil;
+import com.emagia.ach.pgp.PgpEncryption;
+import com.emagia.ach.pgp.PgpEncryptionUtil;
 import com.emagia.ach.pgp.PgpServiceEncryptSign;
 import com.emagia.ach.repository.*;
 import com.emagia.ach.service.Achfileservice;
@@ -19,6 +22,8 @@ import com.emagia.ach.utils.AchStringUtil;
 import com.emagia.ach.utils.AchUtils;
 import com.emagia.ach.utils.BU;
 import lombok.extern.log4j.Log4j2;
+import org.bouncycastle.bcpg.CompressionAlgorithmTags;
+import org.bouncycastle.bcpg.SymmetricKeyAlgorithmTags;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,9 +59,10 @@ public class AchfileserviceImpl implements Achfileservice {
     private FileUploadSFTPService fileUploadSFTPService;
     @Autowired
     private PgpServiceEncryptSign pgpServiceEncryptSign;
-/*
+    @Autowired
+    private PgpEncryption pgpEncryption;
     PgpEncryptionUtil pgpEncryptionUtil;
-    PgpDecryptionUtil pgpDecryptionUtil;*/
+    PgpDecryptionUtil pgpDecryptionUtil;
     private int entrySequenceNumber;
     private final String RT_Number_WellsFargo = "09100001";
     private Integer totalEntryAddendaCount;
@@ -72,10 +78,12 @@ public class AchfileserviceImpl implements Achfileservice {
         return Optional.ofNullable(AchfileserviceImpl.class.getResource(resourcePath))
                 .orElseThrow(() -> new IllegalArgumentException("Resource not found"));
     }
-    private final URL publicKey = loadResource("/public.pgp");
-    private final URL privateKey = loadResource("/private.pgp");
+    //private final URL publicKey = loadResource("/AnilPGP_Public.asc");
+    //private final URL privateKey = loadResource("/AnilPGP_Private.asc");
 
-    private static final String passkey = "dummy";
+    private static final String passkey = "hanuman";
+    public static final String specialChars2 = "[^\\dA-Za-z ]";
+
 
     @Override
     public String createOSStringAchCTXDoc() {
@@ -83,7 +91,9 @@ public class AchfileserviceImpl implements Achfileservice {
         log.info("Fetching file Header configuration.");
         Optional<List<FileHeaderEntity>> fileHeaderEntityOptional = Optional.of(fileHeaderRepository.findAll());
         log.info("Fetching file Header configuration completed");
-        fileHeaderEntityOptional.ifPresent(fileHeaderEntities -> fileHeaderEntities.forEach(entity -> achFileWriter(entity, entity.getCompanyNameImdOrigName().replaceAll(" ", ""))));
+        //fileHeaderEntityOptional.ifPresent(fileHeaderEntities -> fileHeaderEntities.forEach(entity -> achFileWriter(entity, entity.getCompanyNameImdOrigName().replaceAll(" ", ""))));
+
+        fileHeaderEntityOptional.ifPresent(fileHeaderEntities -> fileHeaderEntities.forEach(entity -> achFileWriter(entity, entity.getCompanyNameImdOrigName().replaceAll(specialChars2, "").replace(" ", ""))));
         log.info("Exiting - "+getClass());
         return "success";
     }
@@ -98,30 +108,31 @@ public class AchfileserviceImpl implements Achfileservice {
             var fileNameToCreateACHFile = "achtest1" + companyNameImdOrigName + ".ach";
             var fileNameToOriginalDECRYPTACHFile = "achtest1" + companyNameImdOrigName+"DECRYPT" + ".ach";
             var fileNameToCreateEncryptFile = "achtest1" + companyNameImdOrigName + ".pgp";
-            myWriterEnc = new FileWriter(fileNameToCreateEncryptFile);
-            myWriterDec = new FileWriter(fileNameToOriginalDECRYPTACHFile);
+            //myWriterEnc = new FileWriter(fileNameToCreateEncryptFile);
+            //myWriterDec = new FileWriter(fileNameToOriginalDECRYPTACHFile);
             myWriter = new FileWriter(fileNameToCreateACHFile);
             log.info("created file writer for : {}",companyNameImdOrigName);
             myWriter.write(ach.write(createAchDocument(entity)));
             InputStream originalFile = new ByteArrayInputStream(ach.write(createAchDocument(entity)).getBytes());
 
-            /*pgpEncryptionUtil = PgpEncryptionUtil.builder()
+            pgpEncryption.encrypt("achtest1StaplesCommercialLLC.ach", "src/main/resources/encrypted/achtest1StaplesCommercialLLC.ach.pgp");
+            pgpEncryptionUtil = PgpEncryptionUtil.builder()
                     .armor(true)
                     .compressionAlgorithm(CompressionAlgorithmTags.ZIP)
                     .symmetricKeyAlgorithm(SymmetricKeyAlgorithmTags.AES_256)
                     .withIntegrityCheck(true)
                     .build();
 
-            byte[] encryptedIn = pgpEncryptionUtil.encrypt(ach.write(createAchDocument(entity)).getBytes(), publicKey.openStream());
-            myWriterEnc.write(Arrays.toString(encryptedIn));
+            //byte[] encryptedIn = pgpEncryptionUtil.encrypt(ach.write(createAchDocument(entity)).getBytes(), publicKey.openStream());
+            //myWriterEnc.write(Arrays.toString(encryptedIn));
             //fileUploadSFTPService.uplodaToEmagiaSftp(targetStream, fileNameToCreateEncryptFile);
-            pgpDecryptionUtil = new PgpDecryptionUtil(privateKey.openStream(), passkey);
-            byte[] decryptedBytes = pgpDecryptionUtil.decrypt(encryptedIn);*/
+            //pgpDecryptionUtil = new PgpDecryptionUtil(privateKey.openStream(), passkey);
+            //byte[] decryptedBytes = pgpDecryptionUtil.decrypt(encryptedIn);
             //myWriterDec.write(ach.read(Arrays.toString(decryptedBytes)).toString());
-            log.info("closing writer: {}",myWriterEnc);
-            log.info("closing writer: {}",myWriterDec);
-            myWriterDec.close();
-            myWriterEnc.close();
+            //log.info("closing writer: {}",myWriterEnc);
+            //log.info("closing writer: {}",myWriterDec);
+            //myWriterDec.close();
+            //myWriterEnc.close();
             myWriter.close();
         } catch (Exception e) {
             log.error("caught exception : {}",e.getMessage());
@@ -213,7 +224,11 @@ public class AchfileserviceImpl implements Achfileservice {
         entryCTXDetail.setDfiAccountNumber(paymentsCaptureBO.getCashAbtBankAccNumber());//17
         entryCTXDetail.setAmount(paymentsCaptureBO.getCashPayTotalAmount());//10
         entryCTXDetail.setIdentificationNumber(paymentsCaptureBO.getCashCusNumber());//15//Individualid
-        entryCTXDetail.setReceivingCompanyName(paymentsCaptureBO.getCashCusName().substring(0, 22));//Individual Name//22 -6 = 16//TODO use positions 55-58 to indicate the number of addenda
+        if(paymentsCaptureBO.getCashCusName().length()>22) {
+            entryCTXDetail.setReceivingCompanyName(paymentsCaptureBO.getCashCusName().substring(0, 22));//Individual Name//22 -6 = 16//TODO use positions 55-58 to indicate the number of addenda
+        }else {
+            entryCTXDetail.setReceivingCompanyName(AchStringUtil.rightPad(paymentsCaptureBO.getCashCusName(), 22));//Individual Name//22 -6 = 16//TODO use positions 55-58 to indicate the number of addenda
+        }
         batchDetail.setDetailRecord(createEntryCTXDetailSTAPLES(entryDetailEntity, entryCTXDetail, entryDetailTraceNumber));
         log.info("Entry detail record created with trace number: {}",last7TraceNumber);
         entryHash += Integer.valueOf(entryCTXDetail.getReceivingDfiIdentification());

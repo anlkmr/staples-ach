@@ -3,6 +3,8 @@ package com.emagia.ach;
 import com.emagia.ach.scheduler.ScheduledTasks;
 import com.emagia.ach.utils.AchStringUtil;
 import org.apache.juli.logging.Log;
+import org.bouncycastle.oer.its.ieee1609dot2.basetypes.Signature;
+import org.bouncycastle.openpgp.examples.KeyBasedFileProcessor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,9 +24,11 @@ public class TestMainCron {
         //3 14 1 0 0 0 9 35 = 62
         //trace++;
         //AchStringUtil.letter(trace)
-        /*String rt = "09100035";
-        String s = AchStringUtil.leftPad("11", 4,"0");
-        List<String> stlist = new ArrayList<>();
+        //String rt = "09100035";
+        //String s = AchStringUtil.leftPad("11", 4,"0");
+        //String s = AchStringUtil.rightPad("11", 22);
+        //System.out.println(s);
+        /*List<String> stlist = new ArrayList<>();
         stlist.add(rt);
         stlist.add(s);
         //Iterable<?> stlistww = null;
@@ -32,12 +36,15 @@ public class TestMainCron {
 
         System.out.println(join);*/
 
-        var ceil = (int) Math.ceil(155);
+       // var ceil = (int) Math.ceil(155);
 
-        System.out.println(numberOfBlockingFileRecords(158));
+       // System.out.println(numberOfBlockingFileRecords(158));
 
         //System.out.println(round(155));
-
+        Signature signature = Signature.getInstance("SHA256withRSA");
+        KeyBasedFileProcessor keyBasedFileProcessor = new KeyBasedFileProcessor();
+        //keyBasedFileProcessor.
+       // signature
 
 
     }

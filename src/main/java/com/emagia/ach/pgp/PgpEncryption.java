@@ -52,7 +52,8 @@ public class PgpEncryption {
   //  private String _passphrases;
 
    // @Value("D:\\Ravali\\PGPencryption\\0xABA2ADAF-pub.asc")
-    @Value("src/main/resources/AnilPGP_Public.asc")
+    @Value("src/main/resources/Sign/staplesKey.asc")
+    //@Value("src/main/resources/WF_STAPL656_1.asc")
     private String _keyFile;
 
     public PgpEncryption() {
@@ -61,6 +62,7 @@ public class PgpEncryption {
     }
 
     public void encrypt(final String inputFile, final String outputFile) throws IOException, PGPException, NoSuchProviderException {
+        _keyFile = "src/main/resources/Sign/staplesKey.asc";
         try (final InputStream keyIn = new FileInputStream(_keyFile);
              final OutputStream out = new BufferedOutputStream(new FileOutputStream(outputFile))) {
             encryptFile(out, inputFile, readPublicKey(keyIn));

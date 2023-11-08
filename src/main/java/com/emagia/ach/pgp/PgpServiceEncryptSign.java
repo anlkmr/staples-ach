@@ -50,7 +50,7 @@ public class PgpServiceEncryptSign {
         // Create the signed data generator
         PGPPrivateKey privateKey = secretKey.extractPrivateKey(new JcePBESecretKeyDecryptorBuilder().setProvider("BC").build(privateKeyPassword));
         PGPSignatureGenerator signatureGenerator = new PGPSignatureGenerator(
-                new JcaPGPContentSignerBuilder(secretKey.getPublicKey().getAlgorithm(), PGPUtil.SHA256).setProvider("BC")
+                new JcaPGPContentSignerBuilder(secretKey.getPublicKey().getAlgorithm(), PGPUtil.SHA1).setProvider("BC")
         );
 
         signatureGenerator.init(PGPSignature.BINARY_DOCUMENT, privateKey);
@@ -58,15 +58,15 @@ public class PgpServiceEncryptSign {
         Iterator<String> userIDs = secretKey.getPublicKey().getUserIDs();
         if (userIDs.hasNext()) {
             PGPSignatureSubpacketGenerator subpacketGenerator = new PGPSignatureSubpacketGenerator();
-            subpacketGenerator.setSignerUserID(false, userIDs.next());
+            subpacketGenerator.setSignerUserID(true, userIDs.next());
             signatureGenerator.setHashedSubpackets(subpacketGenerator.generate());
         }
 
-        signatureGenerator.generateOnePassVersion(false).encode(encryptedOut);
+        signatureGenerator.generateOnePassVersion(true).encode(encryptedOut);
 
         PGPLiteralDataGenerator literalDataGenerator = new PGPLiteralDataGenerator();
         //inputFileToProcess.readAllBytes();
-        OutputStream literalOut = literalDataGenerator.open(encryptedOut, PGPLiteralData.UTF8, "", inputFileToProcess.readAllBytes().length, new Date());
+        OutputStream literalOut = literalDataGenerator.open(encryptedOut, PGPLiteralData.BINARY, "", inputFileToProcess.readAllBytes().length, new Date());
         literalOut.write(inputFileToProcess.readAllBytes());
         literalOut.close();
 

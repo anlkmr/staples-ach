@@ -48,11 +48,11 @@ public class PgpServiceDecryptUnsign {
 
         Object nextObject;
         while ((nextObject = pgpFactory.nextObject()) != null) {
-            //if (nextObject instanceof PGPPublicKeyEncryptedData) {
+            if (nextObject instanceof PGPPublicKeyEncryptedData) {
             PGPEncryptedDataList encryptedDataInfoList = (PGPEncryptedDataList) nextObject;
                 encryptedDataInfo = (PGPPublicKeyEncryptedData) encryptedDataInfoList.get(0);
-            //    break;
-            //}
+                break;
+            }
         }
 
         if (encryptedDataInfo == null) {
@@ -88,7 +88,7 @@ public class PgpServiceDecryptUnsign {
         while ((bytesRead = literalDataStream.read(buffer)) != -1) {
 
             outputStream.write(buffer, 0, bytesRead);
-           // signature.update(buffer, 0, bytesRead);
+           signature.update(buffer, 0, bytesRead);
         }
 
         literalDataStream.close();
