@@ -5,12 +5,12 @@ import jakarta.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "BATCH_HEADER", schema = "HR")
+@Table(name = "BATCH_HEADER", schema = "EXCHANGEDEV")
 public class BatchHeaderEntity {
 
     @Basic
     @Id
-    @SequenceGenerator(schema = "hr", name = "BATCH_HEADER_ID_SEQ", sequenceName  = "BATCH_HEADER_ID_SEQ", allocationSize = 1)
+    @SequenceGenerator(schema = "EXCHANGEDEV", name = "BATCH_HEADER_ID_SEQ", sequenceName  = "BATCH_HEADER_ID_SEQ", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "BATCH_HEADER_ID_SEQ")
     @Column(name = "BATCH_HEADER_ID", nullable = true)
     private Long batchHeaderId;

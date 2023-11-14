@@ -5,12 +5,12 @@ import jakarta.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "FILE_HEADER", schema = "HR")
+@Table(name = "FILE_HEADER", schema = "EXCHANGEDEV")
 public class FileHeaderEntity {
 
     @Basic
     @Id
-    @SequenceGenerator(schema = "hr", name = "FILE_HEADER_ID_SEQ", sequenceName  = "FILE_HEADER_ID_SEQ", allocationSize = 1)
+    @SequenceGenerator(schema = "EXCHANGEDEV", name = "FILE_HEADER_ID_SEQ", sequenceName  = "FILE_HEADER_ID_SEQ", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "FILE_HEADER_ID_SEQ")
 
     @Column(name = "FILE_HEADER_ID", nullable = true)

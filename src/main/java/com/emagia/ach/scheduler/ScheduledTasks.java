@@ -1,6 +1,6 @@
 package com.emagia.ach.scheduler;
 
-import com.emagia.ach.repository.EmployeeRepository;
+import com.emagia.ach.repository.AchScheduleRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,7 @@ import java.util.Date;
 public class ScheduledTasks {
 
     @Autowired
-    private EmployeeRepository cronRepo;
+    private AchScheduleRepository cronRepo;
     private static final Logger log = LoggerFactory.getLogger(ScheduledTasks.class);
 
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
@@ -34,6 +34,6 @@ public class ScheduledTasks {
     @Bean
     public String getCronValue()
     {
-        return cronRepo.findById(1L).get().getRole();
+        return cronRepo.findById(1L).get().getValue();
     }
 }

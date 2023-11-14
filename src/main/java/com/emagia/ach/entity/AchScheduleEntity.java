@@ -3,8 +3,8 @@ package com.emagia.ach.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "employee")
-public class Employee {
+@Table(name = "ach_schedule", schema = "EXCHANGEDEV")
+public class AchScheduleEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -13,8 +13,8 @@ public class Employee {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "role")
-    private String role;
+    @Column(name = "value")
+    private String value;
 
 
     public long getId() {
@@ -33,11 +33,11 @@ public class Employee {
         this.name = name;
     }
 
-    public String getRole() {
-        return role;
+    public String getValue() {
+        return value;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setValue(String value) {
+        this.value = value;
     }
 }

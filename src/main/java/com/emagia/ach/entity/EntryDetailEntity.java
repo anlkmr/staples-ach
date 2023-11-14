@@ -5,11 +5,11 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "ENTRY_DETAIL", schema = "HR")
+@Table(name = "ENTRY_DETAIL", schema = "EXCHANGEDEV")
 public class EntryDetailEntity {
     @Basic
     @Id
-    @SequenceGenerator(schema = "hr", name = "ENTRY_DETAIL_ID_SEQ", sequenceName  = "ENTRY_DETAIL_ID_SEQ", allocationSize = 1)
+    @SequenceGenerator(schema = "EXCHANGEDEV", name = "ENTRY_DETAIL_ID_SEQ", sequenceName  = "ENTRY_DETAIL_ID_SEQ", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ENTRY_DETAIL_ID_SEQ")
     private Long id;
     @Basic

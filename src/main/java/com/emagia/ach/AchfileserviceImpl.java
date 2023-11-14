@@ -25,6 +25,7 @@ import lombok.extern.log4j.Log4j2;
 import org.bouncycastle.bcpg.CompressionAlgorithmTags;
 import org.bouncycastle.bcpg.SymmetricKeyAlgorithmTags;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -113,9 +114,9 @@ public class AchfileserviceImpl implements Achfileservice {
             myWriter = new FileWriter(fileNameToCreateACHFile);
             log.info("created file writer for : {}",companyNameImdOrigName);
             myWriter.write(ach.write(createAchDocument(entity)));
-            InputStream originalFile = new ByteArrayInputStream(ach.write(createAchDocument(entity)).getBytes());
+            //InputStream originalFile = new ByteArrayInputStream(ach.write(createAchDocument(entity)).getBytes());
 
-            pgpEncryption.encrypt("achtest1StaplesCommercialLLC.ach", "src/main/resources/encrypted/achtest1StaplesCommercialLLC.ach.pgp");
+            //pgpEncryption.encrypt("achtest1StaplesCommercialLLC.ach", "src/main/resources/encrypted/achtest1StaplesCommercialLLC.ach.pgp");
             pgpEncryptionUtil = PgpEncryptionUtil.builder()
                     .armor(true)
                     .compressionAlgorithm(CompressionAlgorithmTags.ZIP)
@@ -403,12 +404,6 @@ public class AchfileserviceImpl implements Achfileservice {
     public void runEvey5Minutes() {
         System.out.println("#############################Current time is :: " + LocalDate.now());
         //createOSStringAchCTXDoc();
-        try {
-            FileWriter myWriter = new FileWriter("achtest1.ach");
-            myWriter.write(createOSStringAchCTXDoc());
-            myWriter.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+
     }
 }

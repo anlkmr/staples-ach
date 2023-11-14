@@ -3,11 +3,11 @@ package com.emagia.ach.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "FILE_CONTROL", schema = "HR")
+@Table(name = "FILE_CONTROL", schema = "EXCHANGEDEV")
 public class FileControlEntity {
     @Basic
     @Id
-    @SequenceGenerator(schema = "hr", name = "FILE_CONTROL_ID_SEQ", sequenceName  = "FILE_CONTROL_ID_SEQ", allocationSize = 1)
+    @SequenceGenerator(schema = "EXCHANGEDEV", name = "FILE_CONTROL_ID_SEQ", sequenceName  = "FILE_CONTROL_ID_SEQ", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "FILE_CONTROL_ID_SEQ")
     private Long id;
     @Basic
