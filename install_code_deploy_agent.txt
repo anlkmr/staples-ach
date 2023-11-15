@@ -10,8 +10,7 @@ chmod +x ./install
 sudo ./install auto
 sudo yum install -y python-pip
 sudo pip install awscli
-//sudo yum install java-11-amazon-corretto
-sudo yum install java-17-amazon-corretto-devel
+sudo yum install java-11-amazon-corretto
 
 //verify installation
 sudo service codedeploy-agent status
