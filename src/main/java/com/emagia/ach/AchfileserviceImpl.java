@@ -25,7 +25,6 @@ import lombok.extern.log4j.Log4j2;
 import org.bouncycastle.bcpg.CompressionAlgorithmTags;
 import org.bouncycastle.bcpg.SymmetricKeyAlgorithmTags;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -68,7 +67,7 @@ public class AchfileserviceImpl implements Achfileservice {
     private final String RT_Number_WellsFargo = "09100001";
     private Integer totalEntryAddendaCount;
     private int entryHash;
-    private BigDecimal entryTotalDebits;
+    private BigDecimal entryTotalCredits;
     private String batchHeaderCompanyID;
     private Integer batchNumber;
     private int blockCount;
@@ -176,7 +175,7 @@ public class AchfileserviceImpl implements Achfileservice {
     private List<ACHBatchDetail> createBatchDetailList(String BU) {
         log.info("fetching payment and payment trasanctions for business unit: {}",BU);
         entryHash = 0;
-        entryTotalDebits = new BigDecimal(0);
+        entryTotalCredits = new BigDecimal(0);
         List<ACHBatchDetail> batchDetailList = new ArrayList<>();
         log.info("fetching entry detail configuration.");
         Optional<EntryDetailEntity> entryDetailEntityOptional = entryDetailRepository.findById(Long.valueOf(3L));
@@ -225,11 +224,7 @@ public class AchfileserviceImpl implements Achfileservice {
         entryCTXDetail.setDfiAccountNumber(paymentsCaptureBO.getCashAbtBankAccNumber());//17
         entryCTXDetail.setAmount(paymentsCaptureBO.getCashPayTotalAmount());//10
         entryCTXDetail.setIdentificationNumber(paymentsCaptureBO.getCashCusNumber());//15//Individualid
-        if(paymentsCaptureBO.getCashCusName().length()>22) {
-            entryCTXDetail.setReceivingCompanyName(paymentsCaptureBO.getCashCusName().substring(0, 22));//Individual Name//22 -6 = 16//TODO use positions 55-58 to indicate the number of addenda
-        }else {
-            entryCTXDetail.setReceivingCompanyName(AchStringUtil.rightPad(paymentsCaptureBO.getCashCusName(), 22));//Individual Name//22 -6 = 16//TODO use positions 55-58 to indicate the number of addenda
-        }
+
         batchDetail.setDetailRecord(createEntryCTXDetailSTAPLES(entryDetailEntity, entryCTXDetail, entryDetailTraceNumber));
         log.info("Entry detail record created with trace number: {}",last7TraceNumber);
         entryHash += Integer.valueOf(entryCTXDetail.getReceivingDfiIdentification());
@@ -237,6 +232,15 @@ public class AchfileserviceImpl implements Achfileservice {
         uniqueList.forEach(captureBO -> {
             addendaRecords.add(createAddendaRecord(last7TraceNumber, captureBO));
         });
+        //addendaSequenceNumber adding 55-58
+        String addendaSequenceNumberPaded = AchStringUtil.leftPad(String.valueOf(addendaSequenceNumber), 4, "0");
+
+        if(paymentsCaptureBO.getCashCusName().length()>18) {
+
+            entryCTXDetail.setReceivingCompanyName(addendaSequenceNumberPaded+paymentsCaptureBO.getCashCusName().substring(0, 18));//Individual Name//22 -6 = 16// use positions 55-58 to indicate the number of addenda
+        }else {
+            entryCTXDetail.setReceivingCompanyName(addendaSequenceNumberPaded+AchStringUtil.rightPad(paymentsCaptureBO.getCashCusName(), 18));//Individual Name//22 -6 = 16// use positions 55-58 to indicate the number of addenda
+        }
         batchDetail.setAddendaRecords(addendaRecords);
     }
 
@@ -248,12 +252,12 @@ public class AchfileserviceImpl implements Achfileservice {
         GeneralAddendaRecord addendaRecord = new GeneralAddendaRecord();
         addendaRecord.getRecordTypeCode();
         addendaRecord.getAddendaTypeCode();
-        addendaRecord.setPaymentRelatedInformation("EMAGIA*PMT*INV#" + captureBO.getCashPaytTransactionId() + "*USD" + captureBO.getCashPaytAmountPaid() + "*" + AchStringUtil.leftPad(String.valueOf(addendaSequenceNumber), 5, "0") + "*FP*ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789");
+        addendaRecord.setPaymentRelatedInformation("EMAGIA*PMT*INV#" + captureBO.getCashPaytTransactionId() + "*USD" + captureBO.getCashPaytAmountPaid() + "\\" + AchStringUtil.leftPad(String.valueOf(addendaSequenceNumber), 5, "0") + "*FP*ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789");
         addendaRecord.setAddendaSequenceNumber(addendaSequenceNumber);
         addendaRecord.setEntryDetailSequenceNumber(Long.valueOf(last7TraceNumber));
         addendaRecord.setLineNumber(4);
         addendaRecord.setRecord("addenda");
-        entryTotalDebits = entryTotalDebits.add(captureBO.getCashPaytAmountPaid());
+        entryTotalCredits = entryTotalCredits.add(captureBO.getCashPaytAmountPaid());
         log.info("created addenda with sequence number: {}", addendaSequenceNumber);
         return addendaRecord;
     }
@@ -306,7 +310,8 @@ public class AchfileserviceImpl implements Achfileservice {
                 entryHashString = entryHashString.substring(1, 10);
             }
             batchControl.setEntryHash(BigInteger.valueOf(Integer.valueOf(entryHashString)));
-            batchControl.setTotalDebits(entryTotalDebits);
+            batchControl.setTotalCredits(entryTotalCredits);
+            //batchControl.setTotalDebits();
             batchControl.setCompanyIdentification(batchHeaderCompanyID);
             batchControl.setMessageAuthenticationCode(batchControlEntity.getMessageAuthCode());
             batchControl.getReserved();
@@ -391,8 +396,8 @@ public class AchfileserviceImpl implements Achfileservice {
             fileControl.setBlockCount(Integer.valueOf(AchUtils.roundBy10(blockCount)));
             fileControl.setEntryAddendaCount(totalEntryAddendaCount);
             fileControl.setEntryHashTotals(Long.valueOf(entryHash));
-            fileControl.setTotalDebits(entryTotalDebits);
-            fileControl.setTotalCredits(new BigDecimal(0));
+            fileControl.setTotalDebits(new BigDecimal(0));
+            fileControl.setTotalCredits(entryTotalCredits);
         }
         fileControl.setLineNumber(6);
         fileControl.setRecord("file control");
