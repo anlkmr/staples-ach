@@ -311,7 +311,7 @@ public class AchfileserviceImpl implements Achfileservice {
             }
             batchControl.setEntryHash(BigInteger.valueOf(Integer.valueOf(entryHashString)));
             batchControl.setTotalCredits(entryTotalCredits);
-            //batchControl.setTotalDebits();
+            batchControl.setTotalDebits(new BigDecimal(0));
             batchControl.setCompanyIdentification(batchHeaderCompanyID);
             batchControl.setMessageAuthenticationCode(batchControlEntity.getMessageAuthCode());
             batchControl.getReserved();
