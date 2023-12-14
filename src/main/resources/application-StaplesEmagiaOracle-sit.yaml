@@ -1,0 +1,10 @@
+spring:
+  jpa:
+    hibernate.ddl-auto = update
+  properties:
+    hibernate.dialect = org.hibernate.dialect.OracleDialect
+  st-datasource:
+    jdbc-url=jdbc:oracle:thin:@staples-sit.ccy4j7v4r91y.us-east-2.rds.amazonaws.com:1521/STAPLSIT
+    username=STAPLES_EMAGIA
+    password=STAPLES_EMAGIA
+    driver-class-name=oracle.jdbc.OracleDriver
