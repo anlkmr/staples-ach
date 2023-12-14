@@ -1,0 +1,3 @@
+spring:
+  banner:
+    location: Banner-uat.txt

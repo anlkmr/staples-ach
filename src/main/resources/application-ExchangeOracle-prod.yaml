@@ -1,0 +1,12 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto = update
+    properties:
+      hibernate.dialect = org.hibernate.dialect.OracleDialect
+  my-datasource:
+    jdbc-url=jdbc:oracle:thin:@exchangerds.cjbd30mxnvv2.us-east-2.rds.amazonaws.com:1521/EXCHANGE
+    username=EXCHANGEPROD
+    password=EXCHANGEPROD
+    driver-class-name=oracle.jdbc.OracleDriver
+
