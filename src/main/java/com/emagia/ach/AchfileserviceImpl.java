@@ -252,7 +252,12 @@ public class AchfileserviceImpl implements Achfileservice {
         GeneralAddendaRecord addendaRecord = new GeneralAddendaRecord();
         addendaRecord.getRecordTypeCode();
         addendaRecord.getAddendaTypeCode();
-        addendaRecord.setPaymentRelatedInformation("EMAGIA*PMT*INV#" + captureBO.getCashPaytTransactionId() + "*USD" + captureBO.getCashPaytAmountPaid() + "\\" + AchStringUtil.leftPad(String.valueOf(addendaSequenceNumber), 5, "0") + "*FP*ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789");
+        addendaRecord.setPaymentRelatedInformation("EMAGIA*PMT*INV#" + captureBO.getCashPaytTransactionId() + "*USD" + captureBO.getCashPaytAmountPaid() + "\\" + AchStringUtil.leftPad(String.valueOf(addendaSequenceNumber), 4, "0") + "*FP*ABCDEFGHIJKLMNOPQRSTUV");
+        if(addendaRecord.getPaymentRelatedInformation().length()<80){
+            var toTrimLength = 80 - addendaRecord.getPaymentRelatedInformation().length();
+            AchStringUtil.rightPad(addendaRecord.getPaymentRelatedInformation(), 80, "0");
+
+        }
         addendaRecord.setAddendaSequenceNumber(addendaSequenceNumber);
         addendaRecord.setEntryDetailSequenceNumber(Long.valueOf(last7TraceNumber));
         addendaRecord.setLineNumber(4);

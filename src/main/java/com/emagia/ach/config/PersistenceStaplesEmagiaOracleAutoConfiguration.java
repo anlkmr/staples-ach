@@ -18,7 +18,7 @@ import javax.sql.DataSource;
 import java.util.HashMap;
 
 @Configuration
-@PropertySource({"classpath:StaplesEmagiaOracle.properties"})
+@PropertySource({"classpath:StaplesEmagiaOracle-UAT.properties"})
 @EnableJpaRepositories(
         basePackages = "com.emagia.ach.staples_emagia.repository",
         entityManagerFactoryRef = "staplesEmagiaOracleEntityManager",

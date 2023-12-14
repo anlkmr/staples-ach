@@ -18,7 +18,7 @@ import javax.sql.DataSource;
 import java.util.HashMap;
 
 @Configuration
-@PropertySource({"classpath:ExchangeOracle.properties"})
+@PropertySource({"classpath:ExchangeOracle-PROD.properties"})
 @EnableJpaRepositories(
         basePackages = "com.emagia.ach.repository",
         entityManagerFactoryRef = "exchangeOracleEntityManager",
